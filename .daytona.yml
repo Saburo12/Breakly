@@ -1,0 +1,50 @@
+name: weakhero
+id: weakhero-ai-platform
+
+description: Full-stack code generation platform using Claude AI and Claude SDK
+
+ide: vscode
+
+build:
+  steps:
+    - name: Install dependencies
+      command: npm install:all
+    - name: Build backend
+      command: npm run build:backend
+    - name: Build frontend
+      command: npm run build:frontend
+
+run:
+  - name: Backend Dev Server
+    command: npm run dev:backend
+    ports:
+      - port: 3001
+        name: Backend API
+  - name: Frontend Dev Server
+    command: npm run dev:frontend
+    ports:
+      - port: 3000
+        name: Frontend Web App
+
+env:
+  - name: ANTHROPIC_API_KEY
+    description: API key for Anthropic Claude SDK
+    required: true
+  - name: DATABASE_URL
+    description: PostgreSQL database connection string
+    required: false
+  - name: NODE_ENV
+    description: Environment (development/production)
+    value: development
+    required: false
+
+ports:
+  - port: 3000
+    protocol: http
+    name: Frontend
+  - port: 3001
+    protocol: http
+    name: Backend API
+  - port: 5432
+    protocol: tcp
+    name: PostgreSQL Database

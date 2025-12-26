@@ -1,0 +1,30 @@
+{
+  "name": "lovable-clone-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Lovable Clone",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "db:migrate": "psql -U postgres -d lovable_clone -f src/db/schema.sql"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "@supabase/supabase-js": "^2.87.1",
+    "axios": "^1.13.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.0",
+    "@types/pg": "^8.10.9",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
