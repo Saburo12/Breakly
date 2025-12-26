@@ -19,7 +19,6 @@ A full-stack code generation platform  featuring real-time streaming code genera
 - Node.js + Express
 - TypeScript
 - PostgreSQL
-- Anthropic Claude SDK
 - JWT Authentication
 - Server-Sent Events (SSE)
 
@@ -36,7 +35,6 @@ A full-stack code generation platform  featuring real-time streaming code genera
 
 - Node.js 18+
 - PostgreSQL 14+
-- Anthropic API Key
 
 ## Setup
 
@@ -131,7 +129,7 @@ lovable-clone/
 1. Register/Login to create an account
 2. Create a new project
 3. Enter a prompt describing what you want to build
-4. Watch as Claude generates code in real-time
+4. Watch as Breakly generates code in real-time
 5. View generated files with syntax highlighting
 6. Save projects for later use
 7. Export code as needed
@@ -148,8 +146,8 @@ The platform uses Server-Sent Events (SSE) for real-time streaming:
 ### Code Generation Flow
 
 1. User submits prompt
-2. Backend receives request and starts Claude stream
-3. Claude generates code with artifacts
+2. Backend receives request and starts stream
+3. Generates code with artifacts
 4. Server parses and forwards chunks via SSE
 5. Frontend receives chunks and updates UI progressively
 6. Generated files are displayed in tabbed interface
