@@ -63,7 +63,7 @@ export function StreamingPreview({ projectId, onSave }: StreamingPreviewProps) {
     localStorage.setItem('generation_count', generationCount.toString());
   }, [generationCount]);
 
-  const { generate, isGenerating, currentContent, generatedFiles, error, cancel, reset } =
+  const { generate, isGenerating, generatedFiles, error } =
     useStreamingGeneration();
 
   const handleGenerate = async () => {
@@ -390,7 +390,7 @@ export function StreamingPreview({ projectId, onSave }: StreamingPreviewProps) {
       <IntegrationsModal
         isOpen={isIntegrationsModalOpen}
         onClose={() => setIsIntegrationsModalOpen(false)}
-        onGitHubConnected={(accessToken, username) => {
+        onGitHubConnected={(accessToken) => {
           setGithubAccessToken(accessToken);
           setIsIntegrationsModalOpen(false);
           // After connecting, show the push modal

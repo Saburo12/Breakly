@@ -160,6 +160,7 @@ export class GitHubService {
     // Add package.json if not present
     if (!files.find(f => f.path === 'package.json')) {
       projectFiles.push({
+        name: 'package.json',
         path: 'package.json',
         language: 'json',
         content: JSON.stringify({
@@ -190,6 +191,7 @@ export class GitHubService {
     // Add README.md if not present
     if (!files.find(f => f.path === 'README.md')) {
       projectFiles.push({
+        name: 'README.md',
         path: 'README.md',
         language: 'markdown',
         content: `# BREAKLY Project
