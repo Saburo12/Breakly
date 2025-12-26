@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Check, Info, ChevronDown } from 'lucide-react';
 
 export function PricingCards() {
-  const [proAnnual, setProAnnual] = useState(false);
-  const [businessAnnual, setBusinessAnnual] = useState(false);
+  const [proAnnual] = useState(false);
+  const [businessAnnual] = useState(false);
   const [proCredits, setProCredits] = useState(100);
   const [businessCredits, setBusinessCredits] = useState(100);
 

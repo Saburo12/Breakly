@@ -22,7 +22,7 @@ interface StreamingPreviewProps {
  * StreamingPreview Component
  * Split screen interface with prompt input and live code preview
  */
-export function StreamingPreview({ projectId, onSave }: StreamingPreviewProps) {
+export function StreamingPreview({ projectId }: StreamingPreviewProps) {
   const location = useLocation();
   const [prompt, setPrompt] = useState('');
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);

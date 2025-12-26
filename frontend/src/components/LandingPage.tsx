@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Plus, Paperclip, Send, X } from 'lucide-react';
 import { AuthModal } from './AuthModal';
 import { PricingModal } from './PricingModal';
@@ -14,7 +13,6 @@ export function LandingPage() {
   const [showPricingModal, setShowPricingModal] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

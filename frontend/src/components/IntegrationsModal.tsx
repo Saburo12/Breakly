@@ -17,7 +17,7 @@ interface Integration {
   username?: string;
 }
 
-export function IntegrationsModal({ isOpen, onClose, onGitHubConnected }: IntegrationsModalProps) {
+export function IntegrationsModal({ isOpen, onClose }: IntegrationsModalProps) {
   const [integrations, setIntegrations] = useState<Integration[]>([
     {
       id: 'github',
