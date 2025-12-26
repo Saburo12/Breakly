@@ -304,7 +304,7 @@ export default function RootLayout({
 }`;
 
       // Create files structure
-      const files = {
+      const files: Record<string, string> = {
         'package.json': JSON.stringify(packageJson, null, 2),
         'next.config.js': nextConfig,
         'tailwind.config.js': tailwindConfig,
