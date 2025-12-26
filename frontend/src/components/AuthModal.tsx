@@ -30,7 +30,7 @@ export function AuthModal({ isOpen, onClose, initialPrompt = '', attachedFiles =
     setError('');
 
     try {
-      const { data, error } = await auth.signInWithOAuth('google');
+      const { error } = await auth.signInWithOAuth('google');
 
       if (error) throw error;
 
@@ -49,7 +49,7 @@ export function AuthModal({ isOpen, onClose, initialPrompt = '', attachedFiles =
     setError('');
 
     try {
-      const { data, error } = await auth.signInWithOAuth('github');
+      const { error } = await auth.signInWithOAuth('github');
 
       if (error) throw error;
 
@@ -77,7 +77,7 @@ export function AuthModal({ isOpen, onClose, initialPrompt = '', attachedFiles =
     try {
       if (authMode === 'magic') {
         // Magic link authentication
-        const { data, error } = await auth.signInWithMagicLink(email);
+        const { error } = await auth.signInWithMagicLink(email);
 
         if (error) throw error;
 
@@ -91,7 +91,7 @@ export function AuthModal({ isOpen, onClose, initialPrompt = '', attachedFiles =
           return;
         }
 
-        const { data, error } = await auth.signUp(email, password);
+        const { error } = await auth.signUp(email, password);
 
         if (error) throw error;
 
@@ -99,7 +99,7 @@ export function AuthModal({ isOpen, onClose, initialPrompt = '', attachedFiles =
         console.log('✅ Signup successful for:', email);
 
         // Auto sign in after signup
-        const { data: signInData, error: signInError } = await auth.signIn(email, password);
+        const { error: signInError } = await auth.signIn(email, password);
         if (signInError) throw signInError;
 
         toast.success('Welcome! 🎉');
@@ -112,7 +112,7 @@ export function AuthModal({ isOpen, onClose, initialPrompt = '', attachedFiles =
           return;
         }
 
-        const { data, error } = await auth.signIn(email, password);
+        const { error } = await auth.signIn(email, password);
 
         if (error) throw error;
 

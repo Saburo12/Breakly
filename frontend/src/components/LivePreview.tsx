@@ -1,4 +1,3 @@
-import React from 'react';
 import { SandpackProvider, SandpackPreview, SandpackLayout } from '@codesandbox/sandpack-react';
 import { GeneratedFile } from '../types';
 

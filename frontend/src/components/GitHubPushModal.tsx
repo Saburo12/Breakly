@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Loader2, Github, ChevronDown } from 'lucide-react';
 import { GitHubService } from '../services/github';
 import { GeneratedFile } from '../types';

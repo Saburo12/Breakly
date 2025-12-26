@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { FileTree } from './FileTree';
 import { MultiFileEditor } from './MultiFileEditor';
 import { GeneratedFile } from '../types';
-import { buildFileTree, flattenFileTree, getFileByPath, FileNode } from '../utils/fileUtils';
+import { buildFileTree, flattenFileTree, FileNode } from '../utils/fileUtils';
 
 interface CodeWorkspaceProps {
   files: GeneratedFile[];

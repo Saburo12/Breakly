@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Copy, Check, Loader2 } from 'lucide-react';
+import { Send, Loader2 } from 'lucide-react';
 import { Message } from '../types';
 import { CodeWorkspace } from './CodeWorkspace';
 
