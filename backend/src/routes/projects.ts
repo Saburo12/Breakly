@@ -68,7 +68,7 @@ router.get(
       return;
     }
 
-    const projectId = parseInt(req.params.id);
+    const projectId = req.params.id;
     const project = await projectModel.findById(projectId);
 
     if (!project) {
@@ -98,7 +98,7 @@ router.put(
       return;
     }
 
-    const projectId = parseInt(req.params.id);
+    const projectId = req.params.id;
     const project = await projectModel.findById(projectId);
 
     if (!project) {
@@ -135,7 +135,7 @@ router.delete(
       return;
     }
 
-    const projectId = parseInt(req.params.id);
+    const projectId = req.params.id;
     const project = await projectModel.findById(projectId);
 
     if (!project) {
@@ -166,7 +166,7 @@ router.get(
       return;
     }
 
-    const projectId = parseInt(req.params.id);
+    const projectId = req.params.id;
     const project = await projectModel.findById(projectId);
 
     if (!project) {
@@ -197,7 +197,7 @@ router.delete(
       return;
     }
 
-    const projectId = parseInt(req.params.projectId);
+    const projectId = req.params.projectId;
     const project = await projectModel.findById(projectId);
 
     if (!project) {
@@ -210,7 +210,7 @@ router.delete(
       return;
     }
 
-    const fileId = parseInt(req.params.fileId);
+    const fileId = req.params.fileId;
     await projectModel.deleteFile(fileId);
 
     res.json({ success: true });
