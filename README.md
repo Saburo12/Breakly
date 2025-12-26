@@ -1,6 +1,6 @@
-# Lovable Clone - AI-Powered Code Generation Platform
+# Breakly - AI-Powered Code Generation Platform
 
-A full-stack code generation platform powered by Claude AI, featuring real-time streaming code generation, multi-file support, and live preview capabilities.
+A full-stack code generation platform  featuring real-time streaming code generation, multi-file support, and live preview capabilities.
 
 ## Features
 
