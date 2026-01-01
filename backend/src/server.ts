@@ -33,10 +33,26 @@ const upload = multer({
  */
 
 // CORS - Allow frontend to access API
-// TEMPORARY: Allow all origins to debug CORS issue
-console.log('🔧 CORS: Allowing all origins (temporary for debugging)');
+// NUCLEAR OPTION: Manually set CORS headers before everything
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Expose-Headers', 'Content-Type, Authorization');
+
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    console.log('✅ OPTIONS request handled:', req.path);
+    return res.status(200).end();
+  }
+
+  next();
+});
+
+// Also use cors middleware as backup
 const corsOptions = {
-  origin: true, // Allow all origins
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
