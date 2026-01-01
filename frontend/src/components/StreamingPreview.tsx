@@ -35,9 +35,23 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
   const [githubAccessToken, setGithubAccessToken] = useState<string>('');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error'; link?: string } | null>(null);
   const [generationCount, setGenerationCount] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
   const conversationEndRef = useRef<HTMLDivElement>(null);
 
   const FREE_GENERATION_LIMIT = 2;
+  const ADMIN_EMAILS = ['your-email@gmail.com']; // Replace with your actual Gmail
+
+  // Check if user is admin
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user && ADMIN_EMAILS.includes(user.email || '')) {
+        setIsAdmin(true);
+        console.log('🔑 Admin mode activated - unlimited generations');
+      }
+    };
+    checkAdmin();
+  }, []);
 
   // Handle initial prompt and files from landing page navigation
   useEffect(() => {
@@ -69,8 +83,8 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
 
-    // Check rate limit BEFORE generating
-    if (generationCount >= FREE_GENERATION_LIMIT) {
+    // Check rate limit BEFORE generating (skip for admins)
+    if (!isAdmin && generationCount >= FREE_GENERATION_LIMIT) {
       setPricingTriggeredByLimit(true);
       setIsPricingModalOpen(true);
       return; // Block generation
@@ -209,11 +223,15 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
           </label>
 
           {/* Generation Counter */}
-          {generationCount < FREE_GENERATION_LIMIT && (
+          {isAdmin ? (
+            <div className="mb-2 text-xs text-green-400 font-semibold">
+              🔑 Admin Mode - Unlimited Generations
+            </div>
+          ) : generationCount < FREE_GENERATION_LIMIT ? (
             <div className="mb-2 text-xs text-slate-400">
               {FREE_GENERATION_LIMIT - generationCount} free generation{FREE_GENERATION_LIMIT - generationCount === 1 ? '' : 's'} remaining
             </div>
-          )}
+          ) : null}
 
           {/* Conversation History */}
           {conversationHistory.length > 0 && (
