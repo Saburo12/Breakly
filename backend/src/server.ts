@@ -109,6 +109,9 @@ app.post('/api/generate/stream', optionalAuthenticate, upload.array('files', 10)
 app.post('/api/generate', optionalAuthenticate, upload.array('files', 10), codeGenController.generate);
 app.post('/api/generate/save', authenticate, codeGenController.saveFiles);
 
+// Handle OPTIONS requests for CORS preflight
+app.options('*', cors());
+
 // 404 handler
 app.use((req: Request, res: Response) => {
   res.status(404).json({ error: 'Route not found' });
