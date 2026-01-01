@@ -39,7 +39,7 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
   const conversationEndRef = useRef<HTMLDivElement>(null);
 
   const FREE_GENERATION_LIMIT = 2;
-  const ADMIN_EMAILS = ['your-email@gmail.com']; // Replace with your actual Gmail
+  const ADMIN_EMAILS = ['awesoham27@gmail.com']; // Replace with your actual Gmail
 
   // Check if user is admin
   useEffect(() => {
