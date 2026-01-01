@@ -33,42 +33,15 @@ const upload = multer({
  */
 
 // CORS - Allow frontend to access API
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:5173',
-  'http://localhost:3001',
-  'https://www.breakly.dev',
-  'https://breakly.dev',
-];
-
-// Add Vercel preview URLs
-if (process.env.FRONTEND_URL) {
-  allowedOrigins.push(process.env.FRONTEND_URL);
-}
-
+// TEMPORARY: Allow all origins to debug CORS issue
+console.log('🔧 CORS: Allowing all origins (temporary for debugging)');
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or Postman)
-      if (!origin) return callback(null, true);
-
-      // Allow Vercel preview deployments
-      if (origin && origin.includes('.vercel.app')) {
-        return callback(null, true);
-      }
-
-      // Check if origin is in allowed list
-      if (origin && allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      // Log rejected origin for debugging
-      console.log('⚠️ CORS blocked origin:', origin);
-      callback(null, false);
-    },
+    origin: true, // Allow all origins
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 
