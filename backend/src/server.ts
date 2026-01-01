@@ -35,15 +35,14 @@ const upload = multer({
 // CORS - Allow frontend to access API
 // TEMPORARY: Allow all origins to debug CORS issue
 console.log('🔧 CORS: Allowing all origins (temporary for debugging)');
-app.use(
-  cors({
-    origin: true, // Allow all origins
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    exposedHeaders: ['Content-Type', 'Authorization'],
-  })
-);
+const corsOptions = {
+  origin: true, // Allow all origins
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use(cors(corsOptions));
 
 // Body parser with 10MB limit for large code files
 app.use(express.json({ limit: '10mb' }));
@@ -86,8 +85,8 @@ app.post('/api/generate/stream', optionalAuthenticate, upload.array('files', 10)
 app.post('/api/generate', optionalAuthenticate, upload.array('files', 10), codeGenController.generate);
 app.post('/api/generate/save', authenticate, codeGenController.saveFiles);
 
-// Handle OPTIONS requests for CORS preflight
-app.options('*', cors());
+// Handle OPTIONS requests for CORS preflight - use same config as main CORS middleware
+app.options('*', cors(corsOptions));
 
 // 404 handler
 app.use((req: Request, res: Response) => {
