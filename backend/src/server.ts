@@ -80,12 +80,16 @@ app.use('/api/auth', authRoutes);
 // Project routes (protected)
 app.use('/api/projects', projectRoutes);
 
-// Code generation routes
+// Code generation routes - handle OPTIONS first for CORS preflight
+app.options('/api/generate/stream', cors(corsOptions));
+app.options('/api/generate', cors(corsOptions));
+app.options('/api/generate/save', cors(corsOptions));
+
 app.post('/api/generate/stream', optionalAuthenticate, upload.array('files', 10), codeGenController.streamGeneration);
 app.post('/api/generate', optionalAuthenticate, upload.array('files', 10), codeGenController.generate);
 app.post('/api/generate/save', authenticate, codeGenController.saveFiles);
 
-// Handle OPTIONS requests for CORS preflight - use same config as main CORS middleware
+// Handle all other OPTIONS requests
 app.options('*', cors(corsOptions));
 
 // 404 handler
