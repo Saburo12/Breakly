@@ -53,18 +53,22 @@ app.use(
       if (!origin) return callback(null, true);
 
       // Allow Vercel preview deployments
-      if (origin.includes('.vercel.app')) {
+      if (origin && origin.includes('.vercel.app')) {
         return callback(null, true);
       }
 
       // Check if origin is in allowed list
-      if (allowedOrigins.includes(origin)) {
+      if (origin && allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
 
-      callback(new Error('Not allowed by CORS'));
+      // Log rejected origin for debugging
+      console.log('⚠️ CORS blocked origin:', origin);
+      callback(null, false);
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 
