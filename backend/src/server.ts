@@ -47,7 +47,7 @@ app.use((req, res, next) => {
     return res.status(200).end();
   }
 
-  next();
+  return next();
 });
 
 // Also use cors middleware as backup
