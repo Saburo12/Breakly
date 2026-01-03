@@ -61,7 +61,7 @@ export class GitHubService {
         name,
         description,
         private: isPrivate,
-        auto_init: false,
+        auto_init: true, // Initialize with README to create main branch
       }),
     });
   }
