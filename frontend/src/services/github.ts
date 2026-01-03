@@ -97,28 +97,35 @@ export class GitHubService {
     files: GeneratedFile[],
     commitMessage: string
   ): Promise<string> {
+    console.log(`[GitHub Push] Starting push to ${owner}/${repo}/${branch} with ${files.length} files`);
+
     // Get the latest commit SHA for the branch
     let baseTreeSha: string | null = null;
     let parentSha: string | null = null;
 
     try {
+      console.log('[GitHub Push] Step 1: Getting branch reference...');
       const refData = await this.fetch(
         `https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${branch}`
       );
       parentSha = refData.object.sha;
+      console.log(`[GitHub Push] ✅ Found parent commit: ${parentSha}`);
 
+      console.log('[GitHub Push] Step 2: Getting commit tree...');
       const commitData = await this.fetch(
         `https://api.github.com/repos/${owner}/${repo}/git/commits/${parentSha}`
       );
       baseTreeSha = commitData.tree.sha;
-    } catch (error) {
-      // Branch doesn't exist, we'll create it
-      console.log('Branch does not exist, will create it');
+      console.log(`[GitHub Push] ✅ Found base tree: ${baseTreeSha}`);
+    } catch (error: any) {
+      console.warn('[GitHub Push] No existing branch, will create new one:', error.message);
     }
 
     // Create blobs for each file
+    console.log(`[GitHub Push] Step 3: Creating ${files.length} file blobs...`);
     const blobs = await Promise.all(
-      files.map(async (file) => {
+      files.map(async (file, index) => {
+        console.log(`[GitHub Push]   Creating blob ${index + 1}/${files.length}: ${file.path}`);
         const blob = await this.fetch(`https://api.github.com/repos/${owner}/${repo}/git/blobs`, {
           method: 'POST',
           body: JSON.stringify({
@@ -134,8 +141,10 @@ export class GitHubService {
         };
       })
     );
+    console.log(`[GitHub Push] ✅ Created ${blobs.length} blobs`);
 
     // Create tree
+    console.log('[GitHub Push] Step 4: Creating git tree...');
     const tree = await this.fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees`, {
       method: 'POST',
       body: JSON.stringify({
@@ -143,8 +152,10 @@ export class GitHubService {
         tree: blobs,
       }),
     });
+    console.log(`[GitHub Push] ✅ Created tree: ${tree.sha}`);
 
     // Create commit
+    console.log('[GitHub Push] Step 5: Creating commit...');
     const commit = await this.fetch(`https://api.github.com/repos/${owner}/${repo}/git/commits`, {
       method: 'POST',
       body: JSON.stringify({
@@ -153,9 +164,12 @@ export class GitHubService {
         parents: parentSha ? [parentSha] : [],
       }),
     });
+    console.log(`[GitHub Push] ✅ Created commit: ${commit.sha}`);
 
     // Update reference
+    console.log('[GitHub Push] Step 6: Updating branch reference...');
     if (parentSha) {
+      console.log(`[GitHub Push] Updating existing branch ${branch}`);
       await this.fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${branch}`, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -163,8 +177,9 @@ export class GitHubService {
           force: false,
         }),
       });
+      console.log('[GitHub Push] ✅ Branch updated successfully!');
     } else {
-      // Create new branch
+      console.log(`[GitHub Push] Creating new branch ${branch}`);
       await this.fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs`, {
         method: 'POST',
         body: JSON.stringify({
@@ -172,8 +187,10 @@ export class GitHubService {
           sha: commit.sha,
         }),
       });
+      console.log('[GitHub Push] ✅ Branch created successfully!');
     }
 
+    console.log(`[GitHub Push] 🎉 PUSH COMPLETE! Commit SHA: ${commit.sha}`);
     return commit.sha;
   }
 
