@@ -114,16 +114,30 @@ export function GitHubPushModal({
           setIsPushing(false);
           return;
         }
+
+        // Ensure we have the username - fetch it if not loaded
+        if (!username) {
+          console.log('[GitHub] Username not loaded, fetching...');
+          const user = await github.getUser();
+          setUsername(user.login);
+          owner = user.login;
+          console.log('[GitHub] Username fetched:', user.login);
+        } else {
+          owner = username;
+          console.log('[GitHub] Using existing username:', username);
+        }
+
         // Create new repo
+        console.log('[GitHub] Creating repository with owner:', owner);
         const newRepo = await github.createRepo(
           repoName,
           repoDescription || `Generated with BREAKLY`,
           isPrivate
         );
         repoUrl = newRepo.html_url;
-        owner = username;
         repoNameToUse = newRepo.name;
         branchToUse = 'main';
+        console.log('[GitHub] Repository created. Full name:', owner + '/' + repoNameToUse);
 
         // Wait for GitHub to finish initializing the repository
         console.log('[GitHub] Waiting for repository to be fully initialized...');
