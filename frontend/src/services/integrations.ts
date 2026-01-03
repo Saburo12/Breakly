@@ -124,23 +124,61 @@ export class IntegrationService {
     try {
       const token = await this.getAuthToken();
       if (!token) {
+        console.warn('[Integration] No auth token found');
         return null;
       }
 
+      // Try to get token from database first
       const response = await fetch(`${API_URL}/api/integrations/github/token`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
 
-      if (!response.ok) {
-        return null;
+      if (response.ok) {
+        const data = await response.json();
+        if (data.access_token) {
+          console.log('[Integration] ✅ Got GitHub token from database');
+          return data.access_token;
+        }
       }
 
-      const data = await response.json();
-      return data.access_token || null;
+      // Fallback: Check session for provider_token (if user connected before deployment)
+      console.warn('[Integration] Database token not found, checking session fallback...');
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (session?.provider_token) {
+        console.log('[Integration] ✅ Using GitHub token from session (fallback)');
+
+        // Try to store it in database for next time
+        if (session.user?.user_metadata?.user_name && session.user?.user_metadata?.provider_id) {
+          console.log('[Integration] Storing session token in database for future use...');
+          await this.storeGitHubIntegration(
+            session.provider_token,
+            session.user.user_metadata.user_name,
+            session.user.user_metadata.provider_id
+          );
+        }
+
+        return session.provider_token;
+      }
+
+      console.error('[Integration] ❌ No GitHub token found in database or session');
+      return null;
     } catch (error) {
-      console.error('Error getting GitHub token:', error);
+      console.error('[Integration] Error getting GitHub token:', error);
+
+      // Final fallback: try session directly
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.provider_token) {
+          console.log('[Integration] ✅ Emergency fallback to session token');
+          return session.provider_token;
+        }
+      } catch (fallbackError) {
+        console.error('[Integration] Fallback also failed:', fallbackError);
+      }
+
       return null;
     }
   }
