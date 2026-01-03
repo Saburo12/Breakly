@@ -124,6 +124,11 @@ export function GitHubPushModal({
         owner = username;
         repoNameToUse = newRepo.name;
         branchToUse = 'main';
+
+        // Wait for GitHub to finish initializing the repository
+        // GitHub needs time to create the initial README commit
+        console.log('[GitHub] Waiting for repository initialization...');
+        await new Promise(resolve => setTimeout(resolve, 3000)); // 3 second delay
       } else {
         if (!selectedRepo) {
           onError('Please select a repository');
@@ -142,18 +147,47 @@ export function GitHubPushModal({
         }
       }
 
-      // Push files
-      await github.pushFiles(
-        owner,
-        repoNameToUse,
-        branchToUse,
-        projectFiles,
-        'Initial commit from BREAKLY'
-      );
+      // Push files with retry logic for new repos
+      let pushSuccess = false;
+      let lastError: any = null;
+      const maxRetries = mode === 'new' ? 3 : 1; // Retry for new repos only
+
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          console.log(`[GitHub] Push attempt ${attempt}/${maxRetries}...`);
+          await github.pushFiles(
+            owner,
+            repoNameToUse,
+            branchToUse,
+            projectFiles,
+            'Initial commit from BREAKLY'
+          );
+          pushSuccess = true;
+          console.log('[GitHub] ✅ Push successful!');
+          break;
+        } catch (error: any) {
+          lastError = error;
+          console.error(`[GitHub] Push attempt ${attempt} failed:`, error.message);
+
+          // If it's a new repo and still initializing, wait and retry
+          if (mode === 'new' && attempt < maxRetries &&
+              (error.message?.includes('empty') || error.message?.includes('Not Found'))) {
+            console.log(`[GitHub] Repository still initializing, waiting ${attempt * 2}s before retry...`);
+            await new Promise(resolve => setTimeout(resolve, attempt * 2000)); // Progressive delay
+          } else {
+            throw error; // Don't retry for other errors
+          }
+        }
+      }
+
+      if (!pushSuccess) {
+        throw lastError;
+      }
 
       onSuccess(`${repoUrl}/tree/${branchToUse}`);
       onClose();
     } catch (error: any) {
+      console.error('[GitHub] ❌ Final error:', error);
       onError(error.message || 'Failed to push to GitHub');
     } finally {
       setIsPushing(false);
