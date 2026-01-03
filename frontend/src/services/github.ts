@@ -27,7 +27,7 @@ export class GitHubService {
     const response = await fetch(url, {
       ...options,
       headers: {
-        'Authorization': `Bearer ${this.accessToken}`,
+        'Authorization': `token ${this.accessToken}`,
         'Accept': 'application/vnd.github+json',
         'Content-Type': 'application/json',
         ...options.headers,
