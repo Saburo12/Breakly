@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Github, Database, FileText, CreditCard, MoreVertical, Check } from 'lucide-react';
+import { X, Github, Database, MoreVertical, Check } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface IntegrationsModalProps {
@@ -31,20 +31,6 @@ export function IntegrationsModal({ isOpen, onClose }: IntegrationsModalProps) {
       name: 'Supabase',
       icon: <Database className="w-6 h-6" />,
       description: 'Integrate Supabase for backend and database management',
-      isConnected: false,
-    },
-    {
-      id: 'notion',
-      name: 'Notion',
-      icon: <FileText className="w-6 h-6" />,
-      description: 'Sync your projects and documentation with Notion',
-      isConnected: false,
-    },
-    {
-      id: 'stripe',
-      name: 'Stripe',
-      icon: <CreditCard className="w-6 h-6" />,
-      description: 'Add payment processing to your applications',
       isConnected: false,
     },
   ]);
