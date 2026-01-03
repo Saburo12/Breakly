@@ -66,6 +66,30 @@ export class GitHubService {
     });
   }
 
+  /**
+   * Wait for a newly created repository to be fully initialized
+   * Polls the repo until the main branch is accessible
+   */
+  async waitForRepoInitialization(owner: string, repo: string, maxAttempts = 10): Promise<boolean> {
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        console.log(`[GitHub] Checking if repo is ready (attempt ${attempt}/${maxAttempts})...`);
+
+        // Try to get the default branch
+        await this.fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs/heads/main`);
+
+        console.log('[GitHub] ✅ Repository is ready!');
+        return true;
+      } catch (error) {
+        console.log(`[GitHub] Repo not ready yet, waiting ${attempt}s...`);
+        await new Promise(resolve => setTimeout(resolve, attempt * 1000)); // Progressive delay
+      }
+    }
+
+    console.error('[GitHub] ❌ Repository initialization timeout');
+    return false;
+  }
+
   async pushFiles(
     owner: string,
     repo: string,

@@ -126,9 +126,12 @@ export function GitHubPushModal({
         branchToUse = 'main';
 
         // Wait for GitHub to finish initializing the repository
-        // GitHub needs time to create the initial README commit
-        console.log('[GitHub] Waiting for repository initialization...');
-        await new Promise(resolve => setTimeout(resolve, 3000)); // 3 second delay
+        console.log('[GitHub] Waiting for repository to be fully initialized...');
+        const isReady = await github.waitForRepoInitialization(owner, repoNameToUse);
+
+        if (!isReady) {
+          throw new Error('Repository initialization timeout. Please try again or push to the repo manually.');
+        }
       } else {
         if (!selectedRepo) {
           onError('Please select a repository');
