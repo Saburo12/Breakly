@@ -8,6 +8,7 @@ import { errorHandler } from './middleware/errorHandler';
 import { authenticate, optionalAuthenticate } from './middleware/auth';
 import authRoutes from './routes/auth';
 import projectRoutes from './routes/projects';
+import integrationsRoutes from './routes/integrations';
 import { codeGenController } from './controllers/codeGenController';
 
 // Load environment variables from project root
@@ -95,6 +96,9 @@ app.use('/api/auth', authRoutes);
 
 // Project routes (protected)
 app.use('/api/projects', projectRoutes);
+
+// Integration routes (protected)
+app.use('/api/integrations', integrationsRoutes);
 
 // Code generation routes - handle OPTIONS first for CORS preflight
 app.options('/api/generate/stream', cors(corsOptions));

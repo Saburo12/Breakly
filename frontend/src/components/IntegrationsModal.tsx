@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Github, Database, MoreVertical, Check } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { IntegrationService } from '../services/integrations';
 
 interface IntegrationsModalProps {
   isOpen: boolean;
@@ -45,19 +46,35 @@ export function IntegrationsModal({ isOpen, onClose }: IntegrationsModalProps) {
 
   const checkGitHubConnection = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.provider_token && session?.user?.user_metadata?.user_name) {
+      // First check if there's a stored integration in the database
+      const { connected, integration } = await IntegrationService.checkGitHubConnection();
+
+      if (connected && integration) {
         setIntegrations(prev =>
-          prev.map(integration =>
-            integration.id === 'github'
-              ? {
-                  ...integration,
-                  isConnected: true,
-                  username: session.user.user_metadata.user_name,
-                }
-              : integration
+          prev.map(int =>
+            int.id === 'github'
+              ? { ...int, isConnected: true, username: integration.provider_username }
+              : int
           )
         );
+      } else {
+        // Check session for fresh OAuth token (just completed OAuth flow)
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.provider_token && session?.user?.user_metadata?.user_name) {
+          // Store the fresh token in the database
+          await IntegrationService.storeGitHubIntegration(
+            session.provider_token,
+            session.user.user_metadata.user_name,
+            session.user.user_metadata.provider_id
+          );
+          setIntegrations(prev =>
+            prev.map(int =>
+              int.id === 'github'
+                ? { ...int, isConnected: true, username: session.user.user_metadata.user_name }
+                : int
+            )
+          );
+        }
       }
     } catch (error) {
       console.error('Error checking GitHub connection:', error);
@@ -101,8 +118,8 @@ export function IntegrationsModal({ isOpen, onClose }: IntegrationsModalProps) {
   const handleDisconnect = async (id: string) => {
     if (id === 'github') {
       try {
-        // Sign out from Supabase (this will clear the GitHub token)
-        await supabase.auth.signOut();
+        // Call backend to remove integration (DOES NOT LOG OUT!)
+        await IntegrationService.disconnectGitHub();
         setIntegrations(prev =>
           prev.map(integration =>
             integration.id === id

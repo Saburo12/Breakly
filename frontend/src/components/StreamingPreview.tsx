@@ -12,6 +12,7 @@ import { IntegrationsModal } from './IntegrationsModal';
 import { GitHubPushModal } from './GitHubPushModal';
 import { Toast } from './Toast';
 import { supabase } from '../lib/supabase';
+import { IntegrationService } from '../services/integrations';
 
 interface StreamingPreviewProps {
   projectId?: number;
@@ -152,9 +153,9 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
 
   const checkGitHubConnection = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.provider_token) {
-        setGithubAccessToken(session.provider_token);
+      const token = await IntegrationService.getGitHubToken();
+      if (token) {
+        setGithubAccessToken(token);
       }
     } catch (error) {
       console.error('Error checking GitHub connection:', error);
@@ -168,13 +169,14 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
     }
 
     // Check if GitHub is connected
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.provider_token) {
+    const token = await IntegrationService.getGitHubToken();
+
+    if (!token) {
       // Not connected, show integrations modal
       setIsIntegrationsModalOpen(true);
     } else {
       // Connected, show push modal
-      setGithubAccessToken(session.provider_token);
+      setGithubAccessToken(token);
       setIsGitHubPushModalOpen(true);
     }
   };
