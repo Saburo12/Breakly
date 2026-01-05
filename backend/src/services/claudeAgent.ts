@@ -5,7 +5,7 @@ import { Response } from 'express';
  * Configuration for Claude code generation
  */
 const CLAUDE_CONFIG = {
-  model: 'claude-sonnet-4-5-20250929', // Sonnet 4.5 - latest stable model
+  model: 'claude-opus-4-5-20251101', // Opus 4.5 - most powerful model for best code quality
   maxTokens: 16000, // Increased to prevent code cutoff during generation
   temperature: 0.7,
 };
