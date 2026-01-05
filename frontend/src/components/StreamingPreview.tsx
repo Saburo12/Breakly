@@ -56,12 +56,31 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
 
   // Handle initial prompt and files from landing page navigation
   useEffect(() => {
+    // First, check navigation state (for email/password auth)
     const state = location.state as { initialPrompt?: string; attachedFiles?: File[] } | null;
     if (state?.initialPrompt) {
       setPrompt(state.initialPrompt);
+      console.log('✅ Loaded prompt from navigation state:', state.initialPrompt);
     }
     if (state?.attachedFiles) {
       setAttachedFiles(state.attachedFiles);
+      console.log('✅ Loaded files from navigation state:', state.attachedFiles.length, 'files');
+    }
+
+    // Also check localStorage (for Google OAuth which redirects)
+    const savedPrompt = localStorage.getItem('breakly_pending_prompt');
+    if (savedPrompt && !state?.initialPrompt) {
+      setPrompt(savedPrompt);
+      localStorage.removeItem('breakly_pending_prompt'); // Clear after using
+      console.log('✅ Loaded prompt from localStorage (OAuth):', savedPrompt);
+    }
+
+    const savedFileNames = localStorage.getItem('breakly_pending_files');
+    if (savedFileNames && !state?.attachedFiles) {
+      const fileNames = JSON.parse(savedFileNames);
+      localStorage.removeItem('breakly_pending_files'); // Clear after using
+      console.log('✅ Loaded file names from localStorage (OAuth):', fileNames);
+      // Note: Can't restore actual File objects, only names
     }
   }, [location.state]);
 

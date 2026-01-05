@@ -30,6 +30,18 @@ export function AuthModal({ isOpen, onClose, initialPrompt = '', attachedFiles =
     setError('');
 
     try {
+      // Store prompt and files in localStorage before OAuth redirect
+      if (initialPrompt) {
+        localStorage.setItem('breakly_pending_prompt', initialPrompt);
+        console.log('💾 Stored prompt for after sign-in:', initialPrompt);
+      }
+      if (attachedFiles && attachedFiles.length > 0) {
+        // Store file names for now (actual files can't be stored)
+        const fileNames = attachedFiles.map(f => f.name);
+        localStorage.setItem('breakly_pending_files', JSON.stringify(fileNames));
+        console.log('💾 Stored file names for after sign-in:', fileNames);
+      }
+
       const { error } = await auth.signInWithOAuth('google');
 
       if (error) throw error;
