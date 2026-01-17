@@ -156,6 +156,9 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
         };
         setConversationHistory(prev => [...prev, aiMessage]);
         setActiveTab('preview'); // Auto-switch to preview
+        // Clear attached files after successful generation
+        setAttachedFiles([]);
+        console.log('[Attach] Cleared attached files after generation');
       }
     }
   }, [isGenerating, generatedFiles, conversationHistory]);
@@ -285,9 +288,15 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
                   <input
                     type="file"
                     multiple
+                    accept="image/*,text/*,.json,.js,.jsx,.ts,.tsx,.py,.html,.css,.md,.csv"
                     onChange={(e) => {
-                      if (e.target.files) {
-                        setAttachedFiles(Array.from(e.target.files));
+                      if (e.target.files && e.target.files.length > 0) {
+                        const newFiles = Array.from(e.target.files);
+                        console.log('[Attach] Selected files:', newFiles.map(f => f.name));
+                        // Append new files to existing ones
+                        setAttachedFiles(prev => [...prev, ...newFiles]);
+                        // Clear the input so the same file can be selected again if needed
+                        e.target.value = '';
                       }
                     }}
                     className="hidden"
