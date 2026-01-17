@@ -126,11 +126,18 @@ export class GitHubService {
     const blobs = await Promise.all(
       files.map(async (file, index) => {
         console.log(`[GitHub Push]   Creating blob ${index + 1}/${files.length}: ${file.path}`);
+
+        // Use base64 encoding for image files, utf-8 for code files
+        const isImage = file.language === 'base64';
+        const encoding = isImage ? 'base64' : 'utf-8';
+
+        console.log(`[GitHub Push]   Encoding: ${encoding} (${isImage ? 'image' : 'code'})`);
+
         const blob = await this.fetch(`https://api.github.com/repos/${owner}/${repo}/git/blobs`, {
           method: 'POST',
           body: JSON.stringify({
             content: file.content,
-            encoding: 'utf-8',
+            encoding: encoding,
           }),
         });
         return {

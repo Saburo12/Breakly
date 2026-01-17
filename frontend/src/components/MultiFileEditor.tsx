@@ -46,13 +46,29 @@ export function MultiFileEditor({
           {/* Editor */}
           {activeFileNode && (
             <div className="flex-1 overflow-hidden">
-              <CodeEditor
-                value={activeFileNode.content || ''}
-                onChange={(value) => onFileChange(activeFileNode.path, value)}
-                language={activeFileNode.language}
-                readOnly={readOnly}
-                height="100%"
-              />
+              {/* Show image preview for base64 images */}
+              {activeFileNode.language === 'base64' ? (
+                <div className="w-full h-full bg-[#0a0a0a] flex items-center justify-center p-8 overflow-auto">
+                  <div className="max-w-full max-h-full">
+                    <img
+                      src={`data:image/png;base64,${activeFileNode.content}`}
+                      alt={activeFileNode.name}
+                      className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                    />
+                    <p className="text-center text-gray-400 mt-4 text-sm">
+                      {activeFileNode.name} (Image File)
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <CodeEditor
+                  value={activeFileNode.content || ''}
+                  onChange={(value) => onFileChange(activeFileNode.path, value)}
+                  language={activeFileNode.language}
+                  readOnly={readOnly}
+                  height="100%"
+                />
+              )}
             </div>
           )}
         </>

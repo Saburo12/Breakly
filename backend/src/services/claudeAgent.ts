@@ -19,6 +19,21 @@ const SYSTEM_PROMPT = `# ⚠️ CRITICAL: MULTI-FILE PROJECT STRUCTURE - CODE ON
 Generate a complete, production-ready application with PROPER FILE STRUCTURE.
 Output ZERO explanations - ONLY code blocks with file paths.
 
+# IMAGE HANDLING (WHEN USER ATTACHES IMAGES)
+When the user provides images:
+1. USE the uploaded images directly in the generated code
+2. Reference them using relative paths: /assets/imagename.jpg or ./imagename.png
+3. Apply proper CSS to fit images appropriately:
+   - Use object-fit: cover/contain for proper scaling
+   - Use aspect-ratio for maintaining proportions
+   - Use max-width: 100% and height: auto for responsive images
+   - Apply Tailwind classes: object-cover, object-contain, aspect-video, aspect-square
+4. Create responsive image containers with proper dimensions
+5. Example: <img src="/assets/hero.jpg" className="w-full h-96 object-cover rounded-xl" alt="Hero" />
+6. For backgrounds: style={{backgroundImage: 'url(/assets/bg.jpg)', backgroundSize: 'cover'}}
+7. DO NOT use placeholder URLs - use actual uploaded filenames
+8. Adjust image sizes to fit the design context (hero: h-96, thumbnail: h-48, avatar: h-12, etc.)
+
 # PROJECT STRUCTURE REQUIREMENTS
 
 ## React/TypeScript Projects (DEFAULT)
@@ -413,7 +428,22 @@ export class ClaudeService {
           console.log('📦 Parsed files:', files.length);
           files.forEach(f => console.log('  -', f.name, `(${f.language})`));
 
-          // Send file information
+          // Add uploaded images to files array
+          if (imageFiles && imageFiles.length > 0) {
+            console.log(`📸 Adding ${imageFiles.length} uploaded image(s) to files`);
+            for (const img of imageFiles) {
+              const imageFile: GeneratedFile = {
+                name: img.name,
+                content: img.base64,
+                language: 'base64',
+                path: `public/assets/${img.name}`,
+              };
+              files.push(imageFile);
+              console.log(`  - Added image: ${img.name}`);
+            }
+          }
+
+          // Send file information (code files + images)
           files.forEach((file, index) => {
             console.log(`📤 Sending file ${index + 1}/${files.length}:`, file.name);
             this.sendSSE(res, {
@@ -594,7 +624,24 @@ export class ClaudeService {
         .join('\n');
 
       // Parse files
-      return this.parseFilesFromContent(textContent);
+      const files = this.parseFilesFromContent(textContent);
+
+      // Add uploaded images to files array
+      if (imageFiles && imageFiles.length > 0) {
+        console.log(`📸 Adding ${imageFiles.length} uploaded image(s) to files`);
+        for (const img of imageFiles) {
+          const imageFile: GeneratedFile = {
+            name: img.name,
+            content: img.base64,
+            language: 'base64',
+            path: `public/assets/${img.name}`,
+          };
+          files.push(imageFile);
+          console.log(`  - Added image: ${img.name}`);
+        }
+      }
+
+      return files;
     } catch (error: any) {
       console.error('Claude generation error:', error);
       throw new Error(`Code generation failed: ${error.message}`);
