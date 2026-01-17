@@ -85,10 +85,14 @@ export class CodeGenController {
 
       // Add images with base64 data
       if (imageFiles.length > 0) {
-        prompt += '\n\n--- Attached Images for Design Reference ---\n';
+        prompt += '\n\n--- IMPORTANT: User Has Attached Images ---\n';
+        prompt += 'The following images have been uploaded and MUST be used in the generated code:\n\n';
         for (const file of imageFiles) {
-          prompt += `Image: ${file.name}\n`;
+          prompt += `📸 ${file.name} - This image will be available at /assets/${file.name}\n`;
         }
+        prompt += '\n⚠️ CRITICAL: You MUST reference these images in your code using /assets/filename.jpg\n';
+        prompt += 'Example: <img src="/assets/${imageFiles[0].name}" /> or style={{backgroundImage: "url(/assets/${imageFiles[0].name})"}}\n';
+        prompt += 'DO NOT use placeholder images - USE THE UPLOADED FILES!\n';
         // Store images for later use in the message payload
         (req as any).imageFiles = imageFiles;
       }
@@ -192,10 +196,14 @@ export class CodeGenController {
 
       // Add images with base64 data
       if (imageFiles.length > 0) {
-        prompt += '\n\n--- Attached Images for Design Reference ---\n';
+        prompt += '\n\n--- IMPORTANT: User Has Attached Images ---\n';
+        prompt += 'The following images have been uploaded and MUST be used in the generated code:\n\n';
         for (const file of imageFiles) {
-          prompt += `Image: ${file.name}\n`;
+          prompt += `📸 ${file.name} - This image will be available at /assets/${file.name}\n`;
         }
+        prompt += '\n⚠️ CRITICAL: You MUST reference these images in your code using /assets/filename.jpg\n';
+        prompt += 'Example: <img src="/assets/${imageFiles[0].name}" /> or style={{backgroundImage: "url(/assets/${imageFiles[0].name})"}}\n';
+        prompt += 'DO NOT use placeholder images - USE THE UPLOADED FILES!\n';
         // Store images for later use in the message payload
         (req as any).imageFiles = imageFiles;
       }
