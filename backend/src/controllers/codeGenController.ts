@@ -78,17 +78,24 @@ export class CodeGenController {
 
     // PREPEND image instructions BEFORE user prompt (so Claude sees it first!)
     if (imageFiles.length > 0) {
-      let imageContext = '🚨 CRITICAL IMAGE CONTEXT 🚨\n\n';
-      imageContext += 'The user has uploaded the following images that MUST be used in your code:\n\n';
+      const firstImageName = imageFiles[0].name;
+
+      let imageContext = '🚨 UPLOADED IMAGES AVAILABLE 🚨\n\n';
+      imageContext += 'The user has uploaded these images:\n';
       for (const file of imageFiles) {
-        imageContext += `📸 IMAGE FILE: ${file.name}\n`;
-        imageContext += `   → Use it at path: /assets/${file.name}\n`;
+        imageContext += `  📸 ${file.name} → Available at /assets/${file.name}\n`;
       }
-      imageContext += '\n⚠️ MANDATORY REQUIREMENTS:\n';
-      imageContext += '1. You MUST use these exact image files in your generated code\n';
-      imageContext += '2. Reference them as: <img src="/assets/' + imageFiles[0].name + '" /> or style={{backgroundImage: "url(/assets/' + imageFiles[0].name + ')"}}\n';
-      imageContext += '3. DO NOT use Unsplash or any placeholder images\n';
-      imageContext += '4. If the user asks to put the image somewhere, use these uploaded files\n\n';
+      imageContext += '\n⚠️ IMPORTANT RULES:\n';
+      imageContext += '1. When the user mentions "the image I uploaded" or "my image" or "the attached image", use /assets/' + firstImageName + '\n';
+      imageContext += '2. For uploaded images, use: style={{backgroundImage: "url(/assets/' + firstImageName + ')", backgroundSize: "cover"}}\n';
+      imageContext += '3. For OTHER images in the design (that user didn\'t upload), use Unsplash URLs as normal\n';
+      imageContext += '4. You can use BOTH uploaded images AND Unsplash images in the same design\n';
+      imageContext += `\nEXAMPLE - User says "put the image as hero background":\n`;
+      imageContext += `<div style={{backgroundImage: "url(/assets/${firstImageName})", backgroundSize: "cover"}}>\n`;
+      imageContext += '  {/* Use uploaded image for hero */}\n';
+      imageContext += '</div>\n';
+      imageContext += '<img src="https://source.unsplash.com/featured/?fashion" />\n';
+      imageContext += '  {/* Use Unsplash for other images */}\n\n';
       imageContext += '--- USER REQUEST ---\n\n';
 
       // Prepend to beginning of prompt
@@ -197,17 +204,24 @@ export class CodeGenController {
 
     // PREPEND image instructions BEFORE user prompt (so Claude sees it first!)
     if (imageFiles.length > 0) {
-      let imageContext = '🚨 CRITICAL IMAGE CONTEXT 🚨\n\n';
-      imageContext += 'The user has uploaded the following images that MUST be used in your code:\n\n';
+      const firstImageName = imageFiles[0].name;
+
+      let imageContext = '🚨 UPLOADED IMAGES AVAILABLE 🚨\n\n';
+      imageContext += 'The user has uploaded these images:\n';
       for (const file of imageFiles) {
-        imageContext += `📸 IMAGE FILE: ${file.name}\n`;
-        imageContext += `   → Use it at path: /assets/${file.name}\n`;
+        imageContext += `  📸 ${file.name} → Available at /assets/${file.name}\n`;
       }
-      imageContext += '\n⚠️ MANDATORY REQUIREMENTS:\n';
-      imageContext += '1. You MUST use these exact image files in your generated code\n';
-      imageContext += '2. Reference them as: <img src="/assets/' + imageFiles[0].name + '" /> or style={{backgroundImage: "url(/assets/' + imageFiles[0].name + ')"}}\n';
-      imageContext += '3. DO NOT use Unsplash or any placeholder images\n';
-      imageContext += '4. If the user asks to put the image somewhere, use these uploaded files\n\n';
+      imageContext += '\n⚠️ IMPORTANT RULES:\n';
+      imageContext += '1. When the user mentions "the image I uploaded" or "my image" or "the attached image", use /assets/' + firstImageName + '\n';
+      imageContext += '2. For uploaded images, use: style={{backgroundImage: "url(/assets/' + firstImageName + ')", backgroundSize: "cover"}}\n';
+      imageContext += '3. For OTHER images in the design (that user didn\'t upload), use Unsplash URLs as normal\n';
+      imageContext += '4. You can use BOTH uploaded images AND Unsplash images in the same design\n';
+      imageContext += `\nEXAMPLE - User says "put the image as hero background":\n`;
+      imageContext += `<div style={{backgroundImage: "url(/assets/${firstImageName})", backgroundSize: "cover"}}>\n`;
+      imageContext += '  {/* Use uploaded image for hero */}\n';
+      imageContext += '</div>\n';
+      imageContext += '<img src="https://source.unsplash.com/featured/?fashion" />\n';
+      imageContext += '  {/* Use Unsplash for other images */}\n\n';
       imageContext += '--- USER REQUEST ---\n\n';
 
       // Prepend to beginning of prompt
