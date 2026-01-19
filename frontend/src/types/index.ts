@@ -43,7 +43,7 @@ export interface GeneratedFile {
 }
 
 export interface StreamChunk {
-  type: 'content' | 'file_start' | 'file_complete' | 'done' | 'error';
+  type: 'reasoning' | 'content' | 'file_start' | 'file_complete' | 'done' | 'error';
   content?: string;
   fileName?: string;
   language?: string;

@@ -6,6 +6,7 @@ import { GeneratedFile, Message } from '../types';
 import { CodeWorkspace } from './CodeWorkspace';
 import { LivePreview } from './LivePreview';
 import { ConversationThread } from './ConversationThread';
+import { ReasoningDisplay } from './ReasoningDisplay';
 import { UpgradeButton } from './UpgradeButton';
 import { PricingModal } from './PricingModal';
 import { IntegrationsModal } from './IntegrationsModal';
@@ -97,7 +98,7 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
     localStorage.setItem('generation_count', generationCount.toString());
   }, [generationCount]);
 
-  const { generate, isGenerating, generatedFiles, error } =
+  const { generate, isGenerating, generatedFiles, reasoningContent, error } =
     useStreamingGeneration();
 
   const handleGenerate = async () => {
@@ -360,7 +361,14 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
         </div>
 
         {/* Right Panel - Code/Preview */}
-        <div className="flex-1 flex flex-col bg-[#0a0a0a]">
+        <div className="flex-1 flex flex-col bg-[#0a0a0a] overflow-y-auto">
+          {/* Reasoning Display */}
+          {(reasoningContent || isGenerating) && (
+            <div className="px-6 pt-6">
+              <ReasoningDisplay content={reasoningContent} isGenerating={isGenerating && !generatedFiles.length} />
+            </div>
+          )}
+
           {/* Tab Switcher */}
           {generatedFiles.length > 0 && (
             <div className="flex items-center gap-2 bg-[#0a0a0a] border-b border-[#333] px-4 py-2">
@@ -387,8 +395,8 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
             </div>
           )}
 
-          {/* Loading State */}
-          {isGenerating && generatedFiles.length === 0 && (
+          {/* Loading State (only show if no reasoning content) */}
+          {isGenerating && generatedFiles.length === 0 && !reasoningContent && (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
                 <Loader2 className="w-12 h-12 text-slate-300 animate-spin mx-auto mb-4" />
@@ -411,7 +419,7 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
           )}
 
           {/* Empty State */}
-          {!isGenerating && generatedFiles.length === 0 && (
+          {!isGenerating && generatedFiles.length === 0 && !reasoningContent && (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center text-slate-400">
                 <img

@@ -14,10 +14,27 @@ const CLAUDE_CONFIG = {
  * System prompt for code generation
  * Instructs Claude to generate production-ready code with proper structure
  */
-const SYSTEM_PROMPT = `# ⚠️ CRITICAL: MULTI-FILE PROJECT STRUCTURE - CODE ONLY
+const SYSTEM_PROMPT = `# ⚠️ CRITICAL: TWO-PHASE OUTPUT FORMAT
 
-Generate a complete, production-ready application with PROPER FILE STRUCTURE.
-Output ZERO explanations - ONLY code blocks with file paths.
+## PHASE 1 - REASONING (REQUIRED FIRST)
+Before generating any code, you MUST output your reasoning wrapped in <reasoning></reasoning> tags:
+
+<reasoning>
+## Approach
+[Explain your high-level approach to building this application]
+
+## Components to Create
+[Numbered list of ALL components/files you will create]
+1. Component name - Purpose
+2. Component name - Purpose
+...
+
+## Design Decisions
+[Key architectural and design choices you're making]
+</reasoning>
+
+## PHASE 2 - CODE GENERATION
+After the reasoning block, generate a complete, production-ready application with PROPER FILE STRUCTURE.
 
 # IMAGE HANDLING (WHEN USER ATTACHES IMAGES)
 When the user provides images:
@@ -33,6 +50,42 @@ When the user provides images:
 6. For backgrounds: style={{backgroundImage: 'url(/assets/bg.jpg)', backgroundSize: 'cover'}}
 7. DO NOT use placeholder URLs - use actual uploaded filenames
 8. Adjust image sizes to fit the design context (hero: h-96, thumbnail: h-48, avatar: h-12, etc.)
+
+# CODE ORGANIZATION RULES
+
+## Component Structure (CRITICAL)
+Create separate files for each component - NO monolithic files!
+
+1. **File Separation**:
+   - Create components/ directory for UI components
+   - Create hooks/ directory for custom React hooks
+   - Create utils/ directory for utility functions
+   - Create types/ directory for TypeScript interfaces
+
+2. **Component Breakdown**:
+   - Break complex UIs into multiple smaller components
+   - Example for landing page, create:
+     * components/layout/Navigation.tsx
+     * components/layout/Footer.tsx
+     * components/home/Hero.tsx
+     * components/home/Features.tsx
+     * components/home/Testimonials.tsx
+     * components/home/Pricing.tsx
+     * components/home/CTA.tsx
+     * components/ui/Button.tsx
+     * components/ui/Card.tsx
+
+3. **Naming Conventions**:
+   - Components: PascalCase (Button.tsx, HeroSection.tsx)
+   - Hooks: camelCase with 'use' prefix (useAuth.ts, useForm.ts)
+   - Utils: camelCase (formatDate.ts, validation.ts)
+   - Types: PascalCase interfaces (User.ts, ApiResponse.ts)
+
+4. **Minimum File Count**:
+   - Simple apps: At least 8-12 component files
+   - Medium apps: At least 15-20 component files
+   - Complex apps: 25+ component files
+   - Each section of UI should be its own component
 
 # PROJECT STRUCTURE REQUIREMENTS
 
@@ -186,12 +239,17 @@ ALWAYS use full paths with folders:
 - Font weights: Use 300, 400, 600, 700, 800
 - Proper text contrast ratio (WCAG AAA)
 
-## ELEGANT COLOR SCHEMES
-- Primary: Rich, sophisticated colors (deep blues, dark purples, charcoal, navy)
-- Secondary: Complementary accent colors (gold, emerald, coral, indigo)
-- Neutral palette: Off-white, light gray, dark gray backgrounds
-- Use color psychology: trust (blue), luxury (gold/purple), growth (green)
-- Implement dark mode with proper contrast
+## PROFESSIONAL COLOR PALETTE (WHITE-BASED DESIGN)
+**CRITICAL: Default to white/light backgrounds with dark accents**
+- **Background**: White (#FFFFFF) or very light gray (#F9FAFB, #F3F4F6)
+- **Text**: Dark gray to black (#111827, #1F2937, #374151)
+- **Headings**: Deep black (#000000, #111827)
+- **Accents**: Indigo (#6366F1), Violet (#8B5CF6), Purple (#A855F7) - use for CTAs, links, highlights
+- **Borders**: Light gray (#E5E7EB, #D1D5DB) for subtle separation
+- **Hover States**: Slightly darker shades of accents
+- **Secondary Accents**: Emerald (#10B981), Blue (#3B82F6), Rose (#F43F5E)
+- Use color psychology: trust (blue), innovation (indigo), growth (emerald)
+- Create CONTRAST: light backgrounds + dark text + vibrant accent colors
 
 ## SUPERIOR LAYOUT
 - Generous whitespace and padding (p-12, p-16, space-y-8)
@@ -251,6 +309,82 @@ ALWAYS use full paths with folders:
 - Typography IS design - make it bold and authoritative
 - Example: Hero text-7xl font-extrabold, subheading text-2xl font-semibold, body text-lg font-normal leading-relaxed
 
+# EXAMPLE COMPONENT STRUCTURES
+
+## Example 1: Landing Page Structure
+For a landing page, generate these files:
+
+/src/App.tsx - Main app component with routing
+/src/components/layout/Navigation.tsx - Top navigation bar
+/src/components/layout/Footer.tsx - Footer with links
+/src/components/home/Hero.tsx - Hero section with CTA
+/src/components/home/Features.tsx - Features grid
+/src/components/home/Testimonials.tsx - Customer testimonials
+/src/components/home/Pricing.tsx - Pricing cards
+/src/components/home/CTA.tsx - Call-to-action section
+/src/components/ui/Button.tsx - Reusable button component
+/src/components/ui/Card.tsx - Reusable card component
+/src/hooks/useScrollAnimation.ts - Custom scroll animation hook
+/src/utils/constants.ts - App constants
+/src/types/index.ts - TypeScript interfaces
+
+## Example 2: Professional Hero Component (WHITE BACKGROUND DESIGN)
+\`\`\`typescript src/components/home/Hero.tsx
+export function Hero() {
+  return (
+    <section className="relative bg-white py-24 overflow-hidden">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#e5e7eb_1px,transparent_1px),linear-gradient(to_bottom,#e5e7eb_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000,transparent)]" />
+
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="text-center">
+          <h1 className="text-6xl lg:text-7xl font-extrabold text-gray-900 mb-6 leading-tight">
+            <span className="block">Build Something</span>
+            <span className="block bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 bg-clip-text text-transparent">
+              Extraordinary
+            </span>
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
+            Create professional, production-ready applications with the power of AI
+          </p>
+          <div className="flex items-center justify-center gap-4">
+            <button className="px-8 py-4 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105">
+              Get Started
+            </button>
+            <button className="px-8 py-4 bg-gray-100 text-gray-900 font-semibold rounded-xl hover:bg-gray-200 transition-all duration-200">
+              Learn More
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+\`\`\`
+
+## Example 3: Professional Card Component
+\`\`\`typescript src/components/ui/Card.tsx
+interface CardProps {
+  title: string;
+  description: string;
+  icon?: React.ReactNode;
+}
+
+export function Card({ title, description, icon }: CardProps) {
+  return (
+    <div className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+      {icon && (
+        <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4 text-indigo-600">
+          {icon}
+        </div>
+      )}
+      <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
+      <p className="text-gray-600 leading-relaxed">{description}</p>
+    </div>
+  );
+}
+\`\`\`
+
 # CORE REQUIREMENTS FOR REACT PROJECTS
 - Use Tailwind CSS utility classes exclusively (configured via tailwind.config.ts)
 - Create components in src/components/ folder
@@ -307,7 +441,7 @@ export interface GeneratedFile {
  * Interface for SSE chunk
  */
 export interface StreamChunk {
-  type: 'content' | 'file_start' | 'file_complete' | 'done' | 'error';
+  type: 'reasoning' | 'content' | 'file_start' | 'file_complete' | 'done' | 'error';
   content?: string;
   fileName?: string;
   language?: string;
@@ -379,6 +513,7 @@ export class ClaudeService {
 
       let fullContent = '';
       let hasCompleted = false;
+      let inReasoningBlock = false;
 
       // Process stream
       try {
@@ -388,11 +523,30 @@ export class ClaudeService {
             const text = chunk.delta.text;
             fullContent += text;
 
-            // Send content chunk to client
-            this.sendSSE(res, {
-              type: 'content',
-              content: text,
-            });
+            // Check if we're entering or exiting reasoning block
+            if (text.includes('<reasoning>')) {
+              inReasoningBlock = true;
+              console.log('🧠 Entering reasoning block');
+            }
+            if (text.includes('</reasoning>')) {
+              inReasoningBlock = false;
+              console.log('🧠 Exiting reasoning block');
+            }
+
+            // Send appropriate chunk type based on whether we're in reasoning block
+            if (inReasoningBlock || text.includes('<reasoning>') || text.includes('</reasoning>')) {
+              // Send as reasoning chunk
+              this.sendSSE(res, {
+                type: 'reasoning',
+                content: text,
+              });
+            } else {
+              // Send as regular content chunk
+              this.sendSSE(res, {
+                type: 'content',
+                content: text,
+              });
+            }
           }
 
           // Handle content block start

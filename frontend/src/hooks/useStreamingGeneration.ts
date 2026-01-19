@@ -7,6 +7,7 @@ interface UseStreamingGenerationReturn {
   generate: (prompt: string, projectId?: number, files?: File[], existingFiles?: GeneratedFile[]) => Promise<void>;
   isGenerating: boolean;
   currentContent: string;
+  reasoningContent: string;
   generatedFiles: GeneratedFile[];
   error: string | null;
   cancel: () => void;
@@ -19,6 +20,7 @@ interface UseStreamingGenerationReturn {
 export function useStreamingGeneration(): UseStreamingGenerationReturn {
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentContent, setCurrentContent] = useState('');
+  const [reasoningContent, setReasoningContent] = useState('');
   const [generatedFiles, setGeneratedFiles] = useState<GeneratedFile[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,6 +47,7 @@ export function useStreamingGeneration(): UseStreamingGenerationReturn {
    */
   const reset = useCallback(() => {
     setCurrentContent('');
+    setReasoningContent('');
     setGeneratedFiles([]);
     setError(null);
   }, []);
@@ -54,8 +57,9 @@ export function useStreamingGeneration(): UseStreamingGenerationReturn {
    */
   const generate = useCallback(
     async (prompt: string, projectId?: number, files?: File[], existingFiles?: GeneratedFile[]): Promise<void> => {
-      // Clear current content but keep existing files for context
+      // Clear current content and reasoning but keep existing files for context
       setCurrentContent('');
+      setReasoningContent('');
       setIsGenerating(true);
       setError(null);
 
@@ -141,6 +145,12 @@ export function useStreamingGeneration(): UseStreamingGenerationReturn {
 
                 // Handle different chunk types
                 switch (chunk.type) {
+                  case 'reasoning':
+                    if (chunk.content) {
+                      setReasoningContent((prev) => prev + chunk.content);
+                    }
+                    break;
+
                   case 'content':
                     if (chunk.content) {
                       setCurrentContent((prev) => prev + chunk.content);
@@ -199,6 +209,7 @@ export function useStreamingGeneration(): UseStreamingGenerationReturn {
     generate,
     isGenerating,
     currentContent,
+    reasoningContent,
     generatedFiles,
     error,
     cancel,
