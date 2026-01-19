@@ -266,6 +266,13 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
             </div>
           )}
 
+          {/* Reasoning Display */}
+          {(reasoningContent || (isGenerating && !generatedFiles.length)) && (
+            <div className="mb-4">
+              <ReasoningDisplay content={reasoningContent} isGenerating={isGenerating && !generatedFiles.length} />
+            </div>
+          )}
+
           {/* Input Container */}
           <div className="bg-[#1a1a1a] rounded-2xl border border-[#333] overflow-hidden">
             {/* Text Input Area */}
@@ -361,14 +368,7 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
         </div>
 
         {/* Right Panel - Code/Preview */}
-        <div className="flex-1 flex flex-col bg-[#0a0a0a] overflow-y-auto">
-          {/* Reasoning Display */}
-          {(reasoningContent || isGenerating) && (
-            <div className="px-6 pt-6">
-              <ReasoningDisplay content={reasoningContent} isGenerating={isGenerating && !generatedFiles.length} />
-            </div>
-          )}
-
+        <div className="flex-1 flex flex-col bg-[#0a0a0a]">
           {/* Tab Switcher */}
           {generatedFiles.length > 0 && (
             <div className="flex items-center gap-2 bg-[#0a0a0a] border-b border-[#333] px-4 py-2">
