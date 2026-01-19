@@ -10,12 +10,48 @@ interface LivePreviewProps {
  * Uses Sandpack to render a live preview of React/TypeScript projects
  */
 export function LivePreview({ files }: LivePreviewProps) {
+  // Create image URL mappings for base64 images
+  const imageMap: Record<string, string> = {};
+
+  files.forEach(file => {
+    if (file.language === 'base64') {
+      // Determine MIME type from filename
+      const ext = file.name.split('.').pop()?.toLowerCase();
+      const mimeType = ext === 'png' ? 'image/png' :
+                       ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' :
+                       ext === 'gif' ? 'image/gif' :
+                       ext === 'svg' ? 'image/svg+xml' : 'image/png';
+
+      // Create data URL
+      const dataUrl = `data:${mimeType};base64,${file.content}`;
+
+      // Map both /assets/filename and public/assets/filename
+      imageMap[`/assets/${file.name}`] = dataUrl;
+      imageMap[`/public/assets/${file.name}`] = dataUrl;
+
+      console.log(`[Preview] Mapped /assets/${file.name} to data URL`);
+    }
+  });
+
   // Convert GeneratedFile[] to Sandpack file format
   const sandpackFiles = files.reduce((acc, file) => {
+    // Skip base64 image files - we'll handle them via imageMap
+    if (file.language === 'base64') {
+      return acc;
+    }
+
+    let code = file.content;
+
+    // Replace image paths with data URLs in the code
+    Object.entries(imageMap).forEach(([path, dataUrl]) => {
+      code = code.replace(new RegExp(`["']${path}["']`, 'g'), `"${dataUrl}"`);
+      code = code.replace(new RegExp(`url\\(${path}\\)`, 'g'), `url(${dataUrl})`);
+    });
+
     // Sandpack expects files with "/" prefix
-    const path = file.path.startsWith('/') ? file.path : `/${file.path}`;
-    acc[path] = {
-      code: file.content,
+    const filePath = file.path.startsWith('/') ? file.path : `/${file.path}`;
+    acc[filePath] = {
+      code: code,
     };
     return acc;
   }, {} as Record<string, { code: string }>);
