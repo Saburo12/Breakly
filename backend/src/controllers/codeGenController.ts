@@ -44,12 +44,12 @@ export class CodeGenController {
       return;
     }
 
-    // Append file information to prompt
-    if (uploadedFiles && uploadedFiles.length > 0) {
-      const textFiles = [];
-      const imageFiles = [];
-      const otherFiles = [];
+    // Process files FIRST before modifying prompt
+    const textFiles = [];
+    const imageFiles = [];
+    const otherFiles = [];
 
+    if (uploadedFiles && uploadedFiles.length > 0) {
       for (const file of uploadedFiles) {
         const mimeType = file.mimetype || '';
         const fileName = file.originalname || '';
@@ -74,33 +74,41 @@ export class CodeGenController {
           otherFiles.push(fileName);
         }
       }
+    }
 
-      // Add text files to prompt
-      if (textFiles.length > 0) {
-        prompt += '\n\n--- Attached Text Files ---\n';
-        for (const file of textFiles) {
-          prompt += `\nFile: ${file.name}\n\`\`\`\n${file.content}\n\`\`\`\n`;
-        }
+    // PREPEND image instructions BEFORE user prompt (so Claude sees it first!)
+    if (imageFiles.length > 0) {
+      let imageContext = '🚨 CRITICAL IMAGE CONTEXT 🚨\n\n';
+      imageContext += 'The user has uploaded the following images that MUST be used in your code:\n\n';
+      for (const file of imageFiles) {
+        imageContext += `📸 IMAGE FILE: ${file.name}\n`;
+        imageContext += `   → Use it at path: /assets/${file.name}\n`;
       }
+      imageContext += '\n⚠️ MANDATORY REQUIREMENTS:\n';
+      imageContext += '1. You MUST use these exact image files in your generated code\n';
+      imageContext += '2. Reference them as: <img src="/assets/' + imageFiles[0].name + '" /> or style={{backgroundImage: "url(/assets/' + imageFiles[0].name + ')"}}\n';
+      imageContext += '3. DO NOT use Unsplash or any placeholder images\n';
+      imageContext += '4. If the user asks to put the image somewhere, use these uploaded files\n\n';
+      imageContext += '--- USER REQUEST ---\n\n';
 
-      // Add images with base64 data
-      if (imageFiles.length > 0) {
-        prompt += '\n\n--- IMPORTANT: User Has Attached Images ---\n';
-        prompt += 'The following images have been uploaded and MUST be used in the generated code:\n\n';
-        for (const file of imageFiles) {
-          prompt += `📸 ${file.name} - This image will be available at /assets/${file.name}\n`;
-        }
-        prompt += '\n⚠️ CRITICAL: You MUST reference these images in your code using /assets/filename.jpg\n';
-        prompt += 'Example: <img src="/assets/${imageFiles[0].name}" /> or style={{backgroundImage: "url(/assets/${imageFiles[0].name})"}}\n';
-        prompt += 'DO NOT use placeholder images - USE THE UPLOADED FILES!\n';
-        // Store images for later use in the message payload
-        (req as any).imageFiles = imageFiles;
-      }
+      // Prepend to beginning of prompt
+      prompt = imageContext + prompt;
 
-      // Add reference to other files
-      if (otherFiles.length > 0) {
-        prompt += `\n\n--- Other Attached Files ---\n${otherFiles.map(name => `- ${name}`).join('\n')}`;
+      // Store images for later use in the message payload
+      (req as any).imageFiles = imageFiles;
+    }
+
+    // Append text files to prompt
+    if (textFiles.length > 0) {
+      prompt += '\n\n--- Attached Text Files ---\n';
+      for (const file of textFiles) {
+        prompt += `\nFile: ${file.name}\n\`\`\`\n${file.content}\n\`\`\`\n`;
       }
+    }
+
+    // Add reference to other files
+    if (otherFiles.length > 0) {
+      prompt += `\n\n--- Other Attached Files ---\n${otherFiles.map(name => `- ${name}`).join('\n')}`;
     }
 
     // Verify project access if projectId provided (skip if DB not available)
@@ -155,12 +163,12 @@ export class CodeGenController {
       return;
     }
 
-    // Append file information to prompt
-    if (uploadedFiles && uploadedFiles.length > 0) {
-      const textFiles = [];
-      const imageFiles = [];
-      const otherFiles = [];
+    // Process files FIRST before modifying prompt
+    const textFiles = [];
+    const imageFiles = [];
+    const otherFiles = [];
 
+    if (uploadedFiles && uploadedFiles.length > 0) {
       for (const file of uploadedFiles) {
         const mimeType = file.mimetype || '';
         const fileName = file.originalname || '';
@@ -185,33 +193,41 @@ export class CodeGenController {
           otherFiles.push(fileName);
         }
       }
+    }
 
-      // Add text files to prompt
-      if (textFiles.length > 0) {
-        prompt += '\n\n--- Attached Text Files ---\n';
-        for (const file of textFiles) {
-          prompt += `\nFile: ${file.name}\n\`\`\`\n${file.content}\n\`\`\`\n`;
-        }
+    // PREPEND image instructions BEFORE user prompt (so Claude sees it first!)
+    if (imageFiles.length > 0) {
+      let imageContext = '🚨 CRITICAL IMAGE CONTEXT 🚨\n\n';
+      imageContext += 'The user has uploaded the following images that MUST be used in your code:\n\n';
+      for (const file of imageFiles) {
+        imageContext += `📸 IMAGE FILE: ${file.name}\n`;
+        imageContext += `   → Use it at path: /assets/${file.name}\n`;
       }
+      imageContext += '\n⚠️ MANDATORY REQUIREMENTS:\n';
+      imageContext += '1. You MUST use these exact image files in your generated code\n';
+      imageContext += '2. Reference them as: <img src="/assets/' + imageFiles[0].name + '" /> or style={{backgroundImage: "url(/assets/' + imageFiles[0].name + ')"}}\n';
+      imageContext += '3. DO NOT use Unsplash or any placeholder images\n';
+      imageContext += '4. If the user asks to put the image somewhere, use these uploaded files\n\n';
+      imageContext += '--- USER REQUEST ---\n\n';
 
-      // Add images with base64 data
-      if (imageFiles.length > 0) {
-        prompt += '\n\n--- IMPORTANT: User Has Attached Images ---\n';
-        prompt += 'The following images have been uploaded and MUST be used in the generated code:\n\n';
-        for (const file of imageFiles) {
-          prompt += `📸 ${file.name} - This image will be available at /assets/${file.name}\n`;
-        }
-        prompt += '\n⚠️ CRITICAL: You MUST reference these images in your code using /assets/filename.jpg\n';
-        prompt += 'Example: <img src="/assets/${imageFiles[0].name}" /> or style={{backgroundImage: "url(/assets/${imageFiles[0].name})"}}\n';
-        prompt += 'DO NOT use placeholder images - USE THE UPLOADED FILES!\n';
-        // Store images for later use in the message payload
-        (req as any).imageFiles = imageFiles;
-      }
+      // Prepend to beginning of prompt
+      prompt = imageContext + prompt;
 
-      // Add reference to other files
-      if (otherFiles.length > 0) {
-        prompt += `\n\n--- Other Attached Files ---\n${otherFiles.map(name => `- ${name}`).join('\n')}`;
+      // Store images for later use in the message payload
+      (req as any).imageFiles = imageFiles;
+    }
+
+    // Append text files to prompt
+    if (textFiles.length > 0) {
+      prompt += '\n\n--- Attached Text Files ---\n';
+      for (const file of textFiles) {
+        prompt += `\nFile: ${file.name}\n\`\`\`\n${file.content}\n\`\`\`\n`;
       }
+    }
+
+    // Add reference to other files
+    if (otherFiles.length > 0) {
+      prompt += `\n\n--- Other Attached Files ---\n${otherFiles.map(name => `- ${name}`).join('\n')}`;
     }
 
     // Verify project access if projectId provided (skip if DB not available)
