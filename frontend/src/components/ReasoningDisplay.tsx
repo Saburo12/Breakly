@@ -19,6 +19,11 @@ export function ReasoningDisplay({ content, isGenerating }: ReasoningDisplayProp
     .replace(/<\/reasoning>/g, '')
     .trim();
 
+  // Debug logging
+  console.log('[ReasoningDisplay] Raw content length:', content.length);
+  console.log('[ReasoningDisplay] Clean content length:', cleanContent.length);
+  console.log('[ReasoningDisplay] isGenerating:', isGenerating);
+
   // Don't render if there's no content
   if (!cleanContent && !isGenerating) {
     return null;
@@ -37,7 +42,7 @@ export function ReasoningDisplay({ content, isGenerating }: ReasoningDisplayProp
           </div>
           <div className="text-left">
             <h3 className="text-lg font-semibold text-white">Reasoning</h3>
-            <p className="text-sm text-slate-400">Claude's planning process</p>
+            <p className="text-sm text-slate-400">Breakly's planning process</p>
           </div>
           {isGenerating && (
             <div className="flex items-center gap-2 ml-4">
