@@ -17,20 +17,21 @@ const CLAUDE_CONFIG = {
 const SYSTEM_PROMPT = `# ⚠️ CRITICAL: TWO-PHASE OUTPUT FORMAT
 
 ## PHASE 1 - REASONING (REQUIRED FIRST)
-Before generating any code, you MUST output your reasoning wrapped in <reasoning></reasoning> tags:
+Before generating any code, you MUST output your reasoning wrapped in <reasoning></reasoning> tags.
+⚠️ CRITICAL: Keep reasoning CONCISE - maximum 120-150 words total.
 
 <reasoning>
 ## Approach
-[Explain your high-level approach to building this application]
+[Brief high-level approach - 2-3 sentences max]
 
 ## Components to Create
-[Numbered list of ALL components/files you will create]
-1. Component name - Purpose
-2. Component name - Purpose
+[Concise numbered list of key components - 5-8 items max]
+1. Component name - Brief purpose
+2. Component name - Brief purpose
 ...
 
-## Design Decisions
-[Key architectural and design choices you're making]
+## Key Decisions
+[1-2 critical architectural choices only]
 </reasoning>
 
 ## PHASE 2 - CODE GENERATION

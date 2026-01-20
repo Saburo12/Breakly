@@ -13,20 +13,12 @@ interface ReasoningDisplayProps {
 export function ReasoningDisplay({ content, isGenerating }: ReasoningDisplayProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
-  // Parse reasoning content (remove XML tags only at start/end, not everywhere)
-  let cleanContent = content.trim();
-
-  // Remove opening tag only if it's at the start
-  if (cleanContent.startsWith('<reasoning>')) {
-    cleanContent = cleanContent.substring('<reasoning>'.length);
-  }
-
-  // Remove closing tag only if it's at the end
-  if (cleanContent.endsWith('</reasoning>')) {
-    cleanContent = cleanContent.substring(0, cleanContent.length - '</reasoning>'.length);
-  }
-
-  cleanContent = cleanContent.trim();
+  // Parse reasoning content - use regex to handle tags and whitespace properly
+  let cleanContent = content
+    .trim()
+    .replace(/^<reasoning>\s*/i, '') // Remove opening tag and trailing whitespace
+    .replace(/\s*<\/reasoning>\s*$/i, '') // Remove closing tag and surrounding whitespace
+    .trim();
 
   // Debug logging
   console.log('[ReasoningDisplay] Raw content length:', content.length);
