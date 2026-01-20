@@ -530,6 +530,9 @@ export class ClaudeService {
             const text = chunk.delta.text;
             fullContent += text;
 
+            // Save current state BEFORE modifying it
+            const wasInReasoningBlock = inReasoningBlock;
+
             // Check if we're entering or exiting reasoning block
             if (text.includes('<reasoning>')) {
               inReasoningBlock = true;
@@ -540,8 +543,9 @@ export class ClaudeService {
               console.log('🧠 Exiting reasoning block');
             }
 
-            // Send appropriate chunk type based on whether we're in reasoning block
-            if (inReasoningBlock || text.includes('<reasoning>') || text.includes('</reasoning>')) {
+            // Use the PREVIOUS state to determine chunk type
+            // This ensures content INSIDE the block gets sent as reasoning
+            if (wasInReasoningBlock || text.includes('<reasoning>') || text.includes('</reasoning>')) {
               // Send as reasoning chunk
               this.sendSSE(res, {
                 type: 'reasoning',
