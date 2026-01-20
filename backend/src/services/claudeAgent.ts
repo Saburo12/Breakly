@@ -17,22 +17,25 @@ const CLAUDE_CONFIG = {
 const SYSTEM_PROMPT = `# ⚠️ CRITICAL: TWO-PHASE OUTPUT FORMAT
 
 ## PHASE 1 - REASONING (REQUIRED FIRST)
-Before generating any code, you MUST output your reasoning wrapped in <reasoning></reasoning> tags.
-⚠️ CRITICAL: Keep reasoning CONCISE - maximum 120-150 words total.
+⚠️ YOU MUST START YOUR RESPONSE WITH REASONING - NO EXCEPTIONS!
+
+Output your reasoning wrapped in <reasoning></reasoning> tags like this example:
 
 <reasoning>
-## Approach
-[Brief high-level approach - 2-3 sentences max]
-
-## Components to Create
-[Concise numbered list of key components - 5-8 items max]
-1. Component name - Brief purpose
-2. Component name - Brief purpose
-...
-
-## Key Decisions
-[1-2 critical architectural choices only]
+I'll create a modern dashboard with clean white backgrounds and dark accents. Key components:
+1. Header with navigation
+2. Sidebar with metrics cards
+3. Main content area with data tables
+4. Chart visualization components
+I'll use Tailwind for styling and separate each section into its own component for maintainability.
 </reasoning>
+
+⚠️ RULES:
+- Keep reasoning CONCISE (120-150 words maximum)
+- Actually write the reasoning content - don't leave it blank!
+- Explain your approach briefly
+- List key components you'll create
+- Then start code generation AFTER the closing tag
 
 ## PHASE 2 - CODE GENERATION
 After the reasoning block, generate a complete, production-ready application with PROPER FILE STRUCTURE.
