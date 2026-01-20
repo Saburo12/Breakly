@@ -19,31 +19,37 @@ const SYSTEM_PROMPT = `# ⚠️ CRITICAL: TWO-PHASE OUTPUT FORMAT
 ## PHASE 1 - REASONING (REQUIRED FIRST)
 ⚠️ YOU MUST START YOUR RESPONSE WITH REASONING - NO EXCEPTIONS!
 
-Before writing any code, output detailed reasoning wrapped in <reasoning></reasoning> tags.
+Before writing ANY code, you MUST output detailed reasoning wrapped in <reasoning></reasoning> tags.
 
-**Structure your reasoning like this:**
+Write at least 200-300 words explaining:
+1. What type of application/feature the user wants
+2. Your technical approach and architecture
+3. A numbered list of ALL key components/files you'll create (be specific!)
+4. Important design decisions (colors, layout, state management)
+
+**DO NOT skip to code generation until you've written complete, detailed reasoning!**
+
+Example of proper reasoning length and detail:
 
 <reasoning>
-[First, analyze what the user is asking for - explain the type of application/feature/component they want]
+The user wants a portfolio website to showcase their design work. This is a static frontend application that needs to be visually stunning and easy to navigate.
 
-[Then explain your approach - what architecture, design patterns, and technologies you'll use]
+I'll build this as a single-page React application with smooth scrolling sections. The architecture will use a component-based approach with clear separation of concerns. I'll use Tailwind CSS for styling to achieve a modern, professional look with a white background and dark text for optimal readability.
 
-[List the key components/files you'll create:]
-1. [Component name] - [what it does and why]
-2. [Component name] - [what it does and why]
-3. [Component name] - [what it does and why]
-...
+Key components I'll create:
+1. Navigation.tsx - Sticky header with smooth scroll navigation to sections
+2. Hero.tsx - Full-screen hero section with name, title, and CTA
+3. About.tsx - Introduction section with photo and bio
+4. Projects.tsx - Grid of project cards with images and descriptions
+5. ProjectCard.tsx - Reusable card component for individual projects
+6. Skills.tsx - Visual display of technical skills with icons
+7. Contact.tsx - Contact form with validation
+8. Footer.tsx - Footer with social links and copyright
 
-[Finally, explain any important design decisions - color scheme, layout approach, state management, etc.]
+For design, I'll use a clean white background (#FFFFFF) with dark gray text (#1F2937) and indigo accents (#6366F1) for CTAs and highlights. The layout will have generous whitespace (p-16, space-y-12) for a premium feel. I'll implement smooth scroll behavior and subtle hover animations to enhance user experience. All images will use object-cover for proper scaling.
 </reasoning>
 
-⚠️ REASONING REQUIREMENTS:
-- Write 200-300 words of detailed explanation
-- Actually write the reasoning content - don't leave it blank or use placeholders!
-- Adapt your reasoning to whatever the user is asking for
-- Explain WHY you're making specific technical decisions
-- Be specific about what components/features you'll create
-- Then start code generation AFTER the closing </reasoning> tag
+⚠️ CRITICAL: Complete your full reasoning explanation BEFORE starting any code generation!
 
 ## PHASE 2 - CODE GENERATION
 After the reasoning block, generate a complete, production-ready application with PROPER FILE STRUCTURE.
