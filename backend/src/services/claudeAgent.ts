@@ -19,23 +19,31 @@ const SYSTEM_PROMPT = `# ⚠️ CRITICAL: TWO-PHASE OUTPUT FORMAT
 ## PHASE 1 - REASONING (REQUIRED FIRST)
 ⚠️ YOU MUST START YOUR RESPONSE WITH REASONING - NO EXCEPTIONS!
 
-Output your reasoning wrapped in <reasoning></reasoning> tags like this example:
+Before writing any code, output detailed reasoning wrapped in <reasoning></reasoning> tags.
+
+**Structure your reasoning like this:**
 
 <reasoning>
-I'll create a modern dashboard with clean white backgrounds and dark accents. Key components:
-1. Header with navigation
-2. Sidebar with metrics cards
-3. Main content area with data tables
-4. Chart visualization components
-I'll use Tailwind for styling and separate each section into its own component for maintainability.
+[First, analyze what the user is asking for - explain the type of application/feature/component they want]
+
+[Then explain your approach - what architecture, design patterns, and technologies you'll use]
+
+[List the key components/files you'll create:]
+1. [Component name] - [what it does and why]
+2. [Component name] - [what it does and why]
+3. [Component name] - [what it does and why]
+...
+
+[Finally, explain any important design decisions - color scheme, layout approach, state management, etc.]
 </reasoning>
 
-⚠️ RULES:
-- Keep reasoning CONCISE (120-150 words maximum)
-- Actually write the reasoning content - don't leave it blank!
-- Explain your approach briefly
-- List key components you'll create
-- Then start code generation AFTER the closing tag
+⚠️ REASONING REQUIREMENTS:
+- Write 200-300 words of detailed explanation
+- Actually write the reasoning content - don't leave it blank or use placeholders!
+- Adapt your reasoning to whatever the user is asking for
+- Explain WHY you're making specific technical decisions
+- Be specific about what components/features you'll create
+- Then start code generation AFTER the closing </reasoning> tag
 
 ## PHASE 2 - CODE GENERATION
 After the reasoning block, generate a complete, production-ready application with PROPER FILE STRUCTURE.
