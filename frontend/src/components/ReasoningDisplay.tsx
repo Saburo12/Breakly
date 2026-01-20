@@ -13,10 +13,10 @@ interface ReasoningDisplayProps {
 export function ReasoningDisplay({ content, isGenerating }: ReasoningDisplayProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
-  // Remove only the exact tag strings, nothing more
+  // Remove ALL occurrences of the tags using global regex
   let cleanContent = content
-    .replace('<reasoning>', '')
-    .replace('</reasoning>', '')
+    .replace(/<reasoning>/g, '')
+    .replace(/<\/reasoning>/g, '')
     .trim();
 
   // Debug logging
