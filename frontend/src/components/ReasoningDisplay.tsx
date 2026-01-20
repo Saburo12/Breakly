@@ -13,15 +13,26 @@ interface ReasoningDisplayProps {
 export function ReasoningDisplay({ content, isGenerating }: ReasoningDisplayProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
-  // Parse reasoning content (remove XML tags)
-  const cleanContent = content
-    .replace(/<reasoning>/g, '')
-    .replace(/<\/reasoning>/g, '')
-    .trim();
+  // Parse reasoning content (remove XML tags only at start/end, not everywhere)
+  let cleanContent = content.trim();
+
+  // Remove opening tag only if it's at the start
+  if (cleanContent.startsWith('<reasoning>')) {
+    cleanContent = cleanContent.substring('<reasoning>'.length);
+  }
+
+  // Remove closing tag only if it's at the end
+  if (cleanContent.endsWith('</reasoning>')) {
+    cleanContent = cleanContent.substring(0, cleanContent.length - '</reasoning>'.length);
+  }
+
+  cleanContent = cleanContent.trim();
 
   // Debug logging
   console.log('[ReasoningDisplay] Raw content length:', content.length);
   console.log('[ReasoningDisplay] Clean content length:', cleanContent.length);
+  console.log('[ReasoningDisplay] Raw content preview:', content.substring(0, 100));
+  console.log('[ReasoningDisplay] Clean content preview:', cleanContent.substring(0, 100));
   console.log('[ReasoningDisplay] isGenerating:', isGenerating);
 
   // Don't render if there's no content
