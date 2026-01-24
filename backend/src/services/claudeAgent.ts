@@ -500,10 +500,17 @@ export class ClaudeService {
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
       // Build message content with images if provided
+      // PREPEND REASONING REQUIREMENT TO USER PROMPT
+      const enhancedPrompt = `CRITICAL INSTRUCTION: Before you generate ANY code, you MUST write detailed reasoning (200-300 words minimum) wrapped in <reasoning></reasoning> tags explaining your approach, architecture, and design decisions.
+
+User's request: ${prompt}
+
+Remember: Start with <reasoning> tags containing 200-300 words, THEN generate the code!`;
+
       const messageContent: any[] = [
         {
           type: 'text',
-          text: prompt,
+          text: enhancedPrompt,
         },
       ];
 
