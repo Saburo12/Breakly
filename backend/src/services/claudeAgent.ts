@@ -14,22 +14,20 @@ const CLAUDE_CONFIG = {
  * System prompt for code generation
  * Instructs Claude to generate production-ready code with proper structure
  */
-const SYSTEM_PROMPT = `# ⚠️ CRITICAL: TWO-PHASE OUTPUT FORMAT
+const SYSTEM_PROMPT = `🚨 ABSOLUTE REQUIREMENT: YOU MUST START EVERY RESPONSE WITH <reasoning></reasoning> TAGS
 
-## PHASE 1 - REASONING (REQUIRED FIRST)
-⚠️ YOU MUST START YOUR RESPONSE WITH REASONING - NO EXCEPTIONS!
+⚠️ MANDATORY FIRST STEP - WRITE DETAILED REASONING:
+Before you write a SINGLE line of code, you MUST write 200-300 words of detailed reasoning inside <reasoning></reasoning> tags.
 
-Before writing ANY code, you MUST output detailed reasoning wrapped in <reasoning></reasoning> tags.
+Your reasoning MUST include:
+- Explanation of what the user is asking for
+- Your technical approach and architecture decisions
+- A numbered list of at least 6-10 specific components/files you'll create
+- Design decisions (colors, layout, styling approach)
 
-Write at least 200-300 words explaining:
-1. What type of application/feature the user wants
-2. Your technical approach and architecture
-3. A numbered list of ALL key components/files you'll create (be specific!)
-4. Important design decisions (colors, layout, state management)
+YOU MUST WRITE AT LEAST 200 WORDS - COUNT THEM IF NEEDED!
 
-**DO NOT skip to code generation until you've written complete, detailed reasoning!**
-
-Example of proper reasoning length and detail:
+Here's what proper detailed reasoning looks like (THIS IS THE MINIMUM LENGTH YOU MUST WRITE):
 
 <reasoning>
 The user wants a portfolio website to showcase their design work. This is a static frontend application that needs to be visually stunning and easy to navigate.
@@ -49,10 +47,12 @@ Key components I'll create:
 For design, I'll use a clean white background (#FFFFFF) with dark gray text (#1F2937) and indigo accents (#6366F1) for CTAs and highlights. The layout will have generous whitespace (p-16, space-y-12) for a premium feel. I'll implement smooth scroll behavior and subtle hover animations to enhance user experience. All images will use object-cover for proper scaling.
 </reasoning>
 
-⚠️ CRITICAL: Complete your full reasoning explanation BEFORE starting any code generation!
+NOW START GENERATING CODE...
 
-## PHASE 2 - CODE GENERATION
-After the reasoning block, generate a complete, production-ready application with PROPER FILE STRUCTURE.
+🚨 DO NOT START CODE GENERATION UNTIL YOU'VE WRITTEN YOUR COMPLETE REASONING BLOCK!
+If you start writing code before writing 200+ words of reasoning, you are doing it WRONG.
+
+After your reasoning block is complete, THEN generate the application code:
 
 # IMAGE HANDLING (WHEN USER ATTACHES IMAGES)
 When the user provides images:
