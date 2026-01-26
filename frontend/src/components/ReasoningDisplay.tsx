@@ -19,6 +19,9 @@ export function ReasoningDisplay({ content, isGenerating }: ReasoningDisplayProp
     .replace(/<\/reasoning>/g, '')
     .trim();
 
+  // Remove code blocks (```language ... ```)
+  cleanContent = cleanContent.replace(/```[\s\S]*?```/g, '').trim();
+
   // Debug logging
   console.log('[ReasoningDisplay] Raw content length:', content.length);
   console.log('[ReasoningDisplay] Clean content length:', cleanContent.length);
