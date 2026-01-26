@@ -62,7 +62,7 @@ export function ReasoningDisplay({ content, isGenerating }: ReasoningDisplayProp
 
       {/* Content */}
       {isExpanded && (
-        <div className="bg-[#1a1a1a] border-x border-b border-[#333] rounded-b-xl p-6 max-h-96 overflow-y-auto">
+        <div className="bg-[#1a1a1a] border-x border-b border-[#333] rounded-b-xl p-6 max-h-48 overflow-y-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: '#333 transparent' }}>
           <div className="prose prose-sm max-w-none">
             {cleanContent ? (
               <div className="text-slate-300 whitespace-pre-wrap font-normal leading-relaxed">
