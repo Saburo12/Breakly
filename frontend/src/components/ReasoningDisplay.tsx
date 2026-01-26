@@ -22,6 +22,26 @@ export function ReasoningDisplay({ content, isGenerating }: ReasoningDisplayProp
   // Remove code blocks (```language ... ```)
   cleanContent = cleanContent.replace(/```[\s\S]*?```/g, '').trim();
 
+  // Truncate to last complete sentence if content is too long
+  // max-h-48 is ~192px, roughly 8-10 lines of text, ~800-1000 characters
+  const MAX_CHARS = 900;
+  if (cleanContent.length > MAX_CHARS) {
+    // Find the last sentence-ending punctuation before the limit
+    const truncated = cleanContent.substring(0, MAX_CHARS);
+    const lastSentenceEnd = Math.max(
+      truncated.lastIndexOf('. '),
+      truncated.lastIndexOf('! '),
+      truncated.lastIndexOf('? '),
+      truncated.lastIndexOf('.\n'),
+      truncated.lastIndexOf('!\n'),
+      truncated.lastIndexOf('?\n')
+    );
+
+    if (lastSentenceEnd > 0) {
+      cleanContent = truncated.substring(0, lastSentenceEnd + 1).trim();
+    }
+  }
+
   // Debug logging
   console.log('[ReasoningDisplay] Raw content length:', content.length);
   console.log('[ReasoningDisplay] Clean content length:', cleanContent.length);
