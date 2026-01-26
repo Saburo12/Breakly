@@ -260,7 +260,7 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
 
           {/* Conversation History */}
           {conversationHistory.length > 0 && (
-            <div className="flex-1 overflow-y-auto mb-3 pr-2">
+            <div className="flex-1 min-h-0 overflow-y-auto mb-3 pr-2">
               <ConversationThread messages={conversationHistory} />
               <div ref={conversationEndRef} />
             </div>
@@ -268,13 +268,13 @@ export function StreamingPreview({ projectId }: StreamingPreviewProps) {
 
           {/* Reasoning Display */}
           {(reasoningContent || (isGenerating && !generatedFiles.length)) && (
-            <div className="mb-4">
+            <div className="mb-4 max-h-60 flex-shrink-0">
               <ReasoningDisplay content={reasoningContent} isGenerating={isGenerating && !generatedFiles.length} />
             </div>
           )}
 
           {/* Input Container */}
-          <div className="bg-[#1a1a1a] rounded-2xl border border-[#333] overflow-hidden">
+          <div className="bg-[#1a1a1a] rounded-2xl border border-[#333] overflow-hidden flex-shrink-0">
             {/* Text Input Area */}
             <div className="p-6">
               <input
